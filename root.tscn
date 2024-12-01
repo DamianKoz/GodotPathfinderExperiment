@@ -1,0 +1,45 @@
+[gd_scene load_steps=8 format=3 uid="uid://cdhxk4gbdp085"]
+
+[ext_resource type="Script" path="res://scripts/street_system.gd" id="1_dtm4s"]
+[ext_resource type="Script" path="res://scripts/camera.gd" id="1_hjb1q"]
+[ext_resource type="MeshLibrary" uid="uid://brt0r47ef3yku" path="res://meshlibrary/streets.tres" id="1_tlj4r"]
+[ext_resource type="PackedScene" uid="uid://bdpsfiohnrgth" path="res://street.tscn" id="2_2wx8s"]
+[ext_resource type="Script" path="res://scripts/fleet_manager.gd" id="2_yyhaj"]
+[ext_resource type="PackedScene" uid="uid://dp8rt5mjr3ark" path="res://vehicle.tscn" id="4_hfnjp"]
+
+[sub_resource type="Environment" id="Environment_5l6fk"]
+background_energy_multiplier = 3.0
+
+[node name="Root" type="Node3D"]
+
+[node name="GridMap" type="GridMap" parent="."]
+mesh_library = ExtResource("1_tlj4r")
+cell_size = Vector3(1, 1, 1)
+cell_center_x = false
+cell_center_z = false
+collision_layer = 2
+data = {
+"cells": PackedInt32Array(0, 0, 0, 1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 65533, 0, 0, 65534, 0, 0, 65535, 0, 0, 65531, 0, 0, 65532, 0, 0)
+}
+
+[node name="StreetSystem" type="Node3D" parent="." node_paths=PackedStringArray("gridmap", "view_camera")]
+script = ExtResource("1_dtm4s")
+street_mesh = ExtResource("2_2wx8s")
+gridmap = NodePath("../GridMap")
+view_camera = NodePath("../Camera")
+
+[node name="FleetManager" type="Node3D" parent="." node_paths=PackedStringArray("gridmap")]
+script = ExtResource("2_yyhaj")
+vehicle_scene = ExtResource("4_hfnjp")
+num_vehicles = 8
+gridmap = NodePath("../GridMap")
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.938589, 0.345036, 0, -0.345036, 0.938589, 0, 1.46759, 2.69684)
+script = ExtResource("1_hjb1q")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5l6fk")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 3.36671, 0)
